@@ -4,6 +4,8 @@ import java.util.EnumSet;
 import java.util.stream.Collectors;
 
 import org.apache.tomcat.jni.Pool;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.batch.BatchProperties.Jdbc;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -16,8 +18,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.thymeleaf.engine.AttributeName;
 
 import com.example.demo.model.Fighter;
-import com.example.demo.model.FighterPool;
 import com.example.demo.model.Fighter.Anime;
+import com.example.demo.repository.impl.JdbcFighterRepository;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +27,11 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @Slf4j
 @RequestMapping("/design")
-@SessionAttributes("fighterPool")
 public class DesignController {
+
+    @Autowired
+    private JdbcFighterRepository fighterRepository;
+
     @GetMapping
     public String design() {
         return "design";
@@ -39,23 +44,19 @@ public class DesignController {
         log.info("animes converted to string. {}", animes);
     }
 
-    @ModelAttribute(name = "fighterPool")
-    public FighterPool fighterPool(){
-        return new FighterPool();
-    }
 
     @ModelAttribute
     public Fighter fighter() {
         return Fighter.builder()
                 .build();
     }
-
     @PostMapping
-    public String processFighterAddition(@Valid Fighter fighter, @ModelAttribute FighterPool pool, Errors errors){
+    public String processFighterAddition(@Valid Fighter fighter, Errors errors){
         if(errors.hasErrors()){
             return "design";
         }
-        pool.add(fighter);
+        var id = fighterRepository.save(fighter);
+        log.info("Saved fighter with {}", id);
         return "redirect:/design";
     }
 }

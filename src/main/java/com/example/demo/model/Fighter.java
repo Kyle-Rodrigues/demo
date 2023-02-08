@@ -15,7 +15,6 @@ import lombok.Builder;
 @Data
 @Builder
 public class Fighter {
-    @NotBlank
     private long id;
     @NotBlank
     private String name;
