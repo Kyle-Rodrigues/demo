@@ -28,6 +28,7 @@
             <label for="resistance" class="form-label"> Resistance: </label>
             <input type="number" class="form-control" id="resistance" th:field="*{resistance}" step="0,1">
         </div>
+        
         <select class="form-select" aria-label="Anime Selection" th:field="*{animeFrom}">
             <option th:each="anime: ${animes}" th:value="${anime}" th:text="${anime}"></option>
         </select>

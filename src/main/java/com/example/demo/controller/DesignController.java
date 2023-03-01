@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.batch.BatchProperties.Jdbc;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,7 +20,7 @@ import org.thymeleaf.engine.AttributeName;
 
 import com.example.demo.model.Fighter;
 import com.example.demo.model.Fighter.Anime;
-import com.example.demo.repository.impl.JdbcFighterRepository;
+import com.example.demo.repository.FighterRepository;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DesignController {
 
     @Autowired
-    private JdbcFighterRepository fighterRepository;
+    private FighterRepository fighterRepository;
 
     @GetMapping
     public String design() {
@@ -50,13 +51,13 @@ public class DesignController {
         return Fighter.builder()
                 .build();
     }
+
     @PostMapping
-    public String processFighterAddition(@Valid Fighter fighter, Errors errors){
-        if(errors.hasErrors()){
+    public String processFighterAddition(@Valid Fighter fighter, BindingResult result){
+        if(result.hasErrors()){
             return "design";
         }
-        var id = fighterRepository.save(fighter);
-        log.info("Saved fighter with {}", id);
-        return "redirect:/design";
+        fighterRepository.save(fighter);
+        return "redirect:/fighterlist";
     }
 }

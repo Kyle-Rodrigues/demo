@@ -1,21 +1,31 @@
 package com.example.demo.model;
-import java.util.Date;
 
-import javax.swing.plaf.TreeUI;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
 public class Fighter {
-    private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @NotBlank
     private String name;
     @Max(100)
@@ -23,21 +33,24 @@ public class Fighter {
     @Min(1000)
     private int health;
     @DecimalMin(value = "0.1", inclusive = true)
-    @DecimalMax(value = "10", inclusive = true)
-    private double resistance;
+    @DecimalMax(value = "10.0", inclusive = true)
+    private BigDecimal resistance;
     private Anime animeFrom;
-    private final Date createdAt = new Date();
 
+    @Builder.Default
+    private LocalDate createdAt = LocalDate.now();
+    
     public enum Anime {
-        NARUTO("Naruto"), BLEACH("Bleach"), ONE_PIECE("One Piece");
+        NARUTO("Naruto"), BLEACH("Bleach"), ONE_PIECE("One Piece"), TEKKEN("Tekken"), SMASH("Smash"), MORTAL_COMBAT("Mortal Kombat"), GODOFWAR("God of War"), HALO("Halo");
 
         private String title;
-        private Anime(String title){
+
+        private Anime(String title) {
             this.title = title;
         }
-        public String getName(){
+
+        public String getTitle() {
             return title;
         }
     }
-
 }
