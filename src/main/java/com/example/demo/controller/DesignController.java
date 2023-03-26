@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import org.apache.tomcat.jni.Pool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.batch.BatchProperties.Jdbc;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.thymeleaf.engine.AttributeName;
 
 import com.example.demo.model.Fighter;
+import com.example.demo.model.User;
 import com.example.demo.model.Fighter.Anime;
 import com.example.demo.repository.FighterRepository;
 
@@ -59,5 +62,13 @@ public class DesignController {
         }
         fighterRepository.save(fighter);
         return "redirect:/fighterlist";
+    }
+
+    @PostMapping("/deleteAllFighters")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String processFightersDeletion(@AuthenticationPrincipal User user){
+        log.info("Delete all fighters for user: {}", user.getAuthorities());
+        fighterRepository.deleteAll();
+        return "redirect:/design";
     }
 }

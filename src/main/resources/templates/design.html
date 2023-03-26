@@ -32,8 +32,11 @@
         <select class="form-select" aria-label="Anime Selection" th:field="*{animeFrom}">
             <option th:each="anime: ${animes}" th:value="${anime}" th:text="${anime}"></option>
         </select>
-
+        
         <button type="submit" class="btn btn-primary mt-3">Create Fighter</button>
+    </form>
+    <form method="post" th:action="@{/design/deleteAllFighters}">
+        <button sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger mt-5">Delete All Fighters </button>
     </form>
 </body>
 
