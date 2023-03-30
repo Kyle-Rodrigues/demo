@@ -3,6 +3,8 @@ package com.example.demo.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -43,6 +45,8 @@ public class Fighter {
     public enum Anime {
         NARUTO("Naruto"), BLEACH("Bleach"), ONE_PIECE("One Piece"), TEKKEN("Tekken"), SMASH("Smash"), MORTAL_COMBAT("Mortal Kombat"), GODOFWAR("God of War"), HALO("Halo");
 
+        @JsonValue
+        @NotBlank
         private String title;
 
         private Anime(String title) {

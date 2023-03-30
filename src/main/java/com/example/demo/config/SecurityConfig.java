@@ -1,5 +1,7 @@
 package com.example.demo.config;
 
+import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -9,7 +11,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
@@ -36,7 +37,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
+        http
                 .authorizeHttpRequests()
                 .requestMatchers(toH2Console()).permitAll()
                 .requestMatchers("/design", "/fighterlist")
@@ -45,20 +46,16 @@ public class SecurityConfig {
                 .and()
                 .formLogin()
                 .loginPage("/login")
-
+                .defaultSuccessUrl("/design", true)
                 .and()
                 .logout()
                 .logoutSuccessUrl("/")
                 .and()
-                .csrf()
-                .ignoringRequestMatchers(toH2Console())
-                .and()
                 .headers()
-                .frameOptions()
-                .sameOrigin()
+                .frameOptions();
 
-                .and()
-                .build();
+        http.csrf().disable();
+        return http.build();
+
     }
-
 }
